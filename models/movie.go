@@ -1,0 +1,27 @@
+package models
+
+type Movie struct {
+	ID       int     `json:"id"`
+	Name     string  `json:"title"`
+	Duration int     `json:"duration"`
+	Genre    string  `json:"genre"`
+	Rating   float64 `json:"rating"`
+}
+
+type MovieStats struct {
+	TotalMovies int           `json:"total_movies"`
+	Duration    DurationStats `json:"duration"`
+	Rating      RatingStats   `json:"rating"`
+}
+
+type DurationStats struct {
+	Average float64 `json:"average"`
+	Max     int     `json:"max"`
+	Min     int     `json:"min"`
+}
+
+type RatingStats struct {
+	Average float64 `json:"average"`
+	Max     float64 `json:"max"`
+	Min     float64 `json:"min"`
+}

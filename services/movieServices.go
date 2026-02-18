@@ -17,7 +17,7 @@ var movies = []models.Movie{
 }
 
 func GetMovies() ([]models.Movie, error) {
-	rows, err := database.DB.Query("SELECT id, name, duration, genre, rating FROM moviesF")
+	rows, err := database.DB.Query("SELECT id, name, duration, genre, rating FROM movies")
 
 	if err != nil {
 		return nil, err
@@ -61,7 +61,7 @@ func UpdateMovie(id int, data map[string]interface{}) (models.Movie, error) {
 			movie.Rating = float64(rating)
 		}
 		_, err := database.DB.Exec(
-			"UPDATE moviesF SET name = $1, duration = $2, genre = $3, rating = $4 WHERE id = $5",
+			"UPDATE movies SET name = $1, duration = $2, genre = $3, rating = $4 WHERE id = $5",
 			movie.Name,
 			movie.Duration,
 			movie.Genre,
@@ -80,7 +80,7 @@ func GetMovieByID(id int) (models.Movie, error) {
 	var movie models.Movie
 
 	err := database.DB.QueryRow(
-		"SELECT id, name, duration, genre, rating FROM moviesF WHERE id = $1",
+		"SELECT id, name, duration, genre, rating FROM movies WHERE id = $1",
 		id,
 	).Scan(&movie.ID, &movie.Name, &movie.Duration, &movie.Genre, &movie.Rating)
 
@@ -97,7 +97,7 @@ func GetMovieByID(id int) (models.Movie, error) {
 
 func PostMovie(movie models.Movie) (models.Movie, error) {
 	err := database.DB.QueryRow(
-		"INSERT INTO moviesF (name, duration, genre, rating) VALUES ($1, $2, $3, $4) RETURNING id",
+		"INSERT INTO movies (name, duration, genre, rating) VALUES ($1, $2, $3, $4) RETURNING id",
 		movie.Name,
 		movie.Duration,
 		movie.Genre,
@@ -114,7 +114,7 @@ func PostMovie(movie models.Movie) (models.Movie, error) {
 
 func DeleteMovie(id int) (string, error) {
 	result, err := database.DB.Exec(
-		"DELETE FROM moviesF WHERE id = $1",
+		"DELETE FROM movies WHERE id = $1",
 		id,
 	)
 	if err != nil {
@@ -130,7 +130,7 @@ func DeleteMovie(id int) (string, error) {
 
 func PutMovie(id int, updatedMovie models.Movie) (models.Movie, error) {
 	result, err := database.DB.Exec(
-		"UPDATE moviesF SET name = $1, duration = $2, genre = $3, rating = $4 WHERE id = $5",
+		"UPDATE movies SET name = $1, duration = $2, genre = $3, rating = $4 WHERE id = $5",
 		updatedMovie.Name,
 		updatedMovie.Duration,
 		updatedMovie.Genre,
@@ -153,7 +153,7 @@ func GetMoviePaginated(limit int, page int) ([]models.Movie, error) {
 	offset := (page - 1) * limit
 
 	rows, err := database.DB.Query(
-		"SELECT id, name, genre, duration, rating FROM moviesF ORDER BY id LIMIT $1 OFFSET $2",
+		"SELECT id, name, genre, duration, rating FROM movies ORDER BY id LIMIT $1 OFFSET $2",
 		limit, offset,
 	)
 	if err != nil {
@@ -181,7 +181,7 @@ func GetMoviesFilter(title string, genre string) ([]models.Movie, error) {
 
 	query := `
         SELECT id, name, genre, duration, rating 
-        FROM moviesF 
+        FROM movies 
         WHERE name ILIKE $1 AND genre ILIKE $2 
         ORDER BY id`
 
